@@ -1,0 +1,191 @@
+
+/* inherit SVG colours from the template settings */
+.abc2-plugin svg,
+.abc-render svg {
+  color: @ini_text;
+  background-color: @ini_background;
+}
+
+/* the SVGs abc2svg (and abc-ui) produce are not responsive and get cut off */
+/* this makes the SVG readable by making it possible for it to break out of the page */
+/* for the default 'dokuwiki' template, other templates might need other fixes */
+.dokuwiki div.page {
+  overflow: visible !important;
+}
+
+/* abcjs (original from abcjs-midi.css, MIT license)
+********************************************************************/
+
+/* changes from Anika Henke <anika@selfthinker.org>:
+   * removed references to Font Awesome
+   * added Unicode characters for player icons instead
+*/
+
+.abcjs-inline-midi {
+	height: 26px;
+	padding: 0 5px;
+	border-radius: 3px;
+	color: #f4f4f4;
+	background-color: #424242;
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+  margin-bottom: 1.4em;
+}
+
+.abcjs-inline-midi .abcjs-btn {
+	width: 28px;
+	height: 26px;
+	display: inline-block;
+	margin-right: 2px;
+	float: left;
+	padding: 0;
+
+	background: none;
+	font: normal normal normal 14px/1 inherit;
+	font-size: 14px;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: #f4f4f4;
+	border: 1px solid transparent;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-btn:hover {
+	color: #cccccc;
+}
+
+.abcjs-inline-midi .abcjs-midi-selection:before {
+	content: "↔";
+}
+
+.abcjs-inline-midi .abcjs-midi-selection.abcjs-pushed {
+	border: 1px solid #cccccc;
+	background-color: #666666;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-loop:before {
+	content: "🔁";
+}
+
+.abcjs-inline-midi .abcjs-midi-loop.abcjs-pushed {
+	border: 1px solid #cccccc;
+	background-color: #666666;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-reset:before {
+	content: "⏮️";
+}
+
+.abcjs-inline-midi .abcjs-midi-reset.abcjs-pushed {
+	border: 1px solid #cccccc;
+	background-color: #666666;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-start:before {
+	content: "▶️";
+}
+
+.abcjs-inline-midi .abcjs-midi-start.abcjs-pushed:before {
+	content: "⏸";
+}
+
+.abcjs-inline-midi .abcjs-midi-start.abcjs-loading {
+	outline: none;
+	animation: a 1s infinite steps(8);
+}
+
+.abcjs-inline-midi .abcjs-midi-start.abcjs-loading:before {
+	content: "◌";
+}
+
+.abcjs-inline-midi .abcjs-midi-progress-background {
+	background-color: #424242;
+	height: 10px;
+	border-radius: 5px;
+	border: 2px solid #cccccc;
+	margin: 0 8px 0 15px;
+	position: relative;
+	flex: 1;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-progress-indicator {
+	width: 20px;
+	margin-left: -10px; /* half of the width */
+	height: 14px;
+	background-color: #f4f4f4;
+	position: absolute;
+	display: inline-block;
+	border-radius: 6px;
+	top: -4px;
+	left: 0;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-clock, .abcjs-inline-midi .abcjs-midi-post {
+	margin-left: 4px;
+	margin-top: 0;
+	display: inline-block;
+	font-family: sans-serif;
+	font-size: 16px;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-pre {
+	display: inline-block;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-tempo-wrapper {
+	float: right;
+	font-size: 10px;
+	display: inline-block;
+	color: #f4f4f4;
+	box-sizing: border-box;
+}
+
+.abcjs-inline-midi .abcjs-midi-tempo {
+	border-radius: 2px;
+	border: none;
+	margin: 1px 2px 0 4px;
+	width: 32px;
+	padding-left: 2px;
+	box-sizing: border-box;
+}
+
+/* Adding the class "abcjs-large" will make the control easier on a touch device. */
+.abcjs-large .abcjs-inline-midi {
+	height: 52px;
+}
+.abcjs-large .abcjs-btn {
+	width: 56px;
+	height: 52px;
+	font-size: 28px;
+}
+.abcjs-large .abcjs-midi-progress-background {
+	height: 20px;
+	border: 4px solid #cccccc;
+}
+.abcjs-large .abcjs-midi-progress-indicator {
+	height: 28px;
+	top: -8px;
+	width: 40px;
+}
+.abcjs-large .abcjs-midi-clock {
+	font-size: 32px;
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.abcjs-highlight {
+  fill: #0a9ecc;
+}
+.abcjs-cursor {
+  stroke: red;
+}

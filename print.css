@@ -1,0 +1,18 @@
+
+/* try to print an SVG on a single page */
+svg {
+  break-inside: avoid;
+}
+
+/* don't print abc midi players etc */
+.abcjs-inline-midi,
+.abc-source .nop,
+.abc-render > table td:first-child,
+.abc-player,
+.abc-player.ready,
+.abc-voices,
+.abc-tempo,
+.abc-dot,
+.abc-player.playing {
+  display: none;
+}
