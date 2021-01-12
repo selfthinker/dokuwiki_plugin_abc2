@@ -240,7 +240,7 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
     function _renderAbcBlock($renderer, $src, $classes) {
         // needs to be a div, otherwise abc-ui won't work
         $renderer->doc .= '<div class="'.$classes.'">';
-        $renderer->doc .= $src;
+        $renderer->doc .= hsc($src);
         // needs NL before </div> or else abc2svg interprets the </div> as abc
         $renderer->doc .= NL.'</div>'.NL;
     }
