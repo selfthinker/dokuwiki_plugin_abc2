@@ -100,6 +100,7 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
             // render the main ABC block
             $containerClasses = $this->_getClasses();
             $showHideClass = $this->getConf('showSource') ? ' show-source' : ' hide-source';
+            $src = $this->_fixLibraryBugs($src);
             $this->_renderAbcBlock($renderer, $src, $containerClasses.$showHideClass);
 
             // transposition
@@ -199,6 +200,40 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
     }
 
     /**
+     * Calculate default unit length
+     * according to http://abcnotation.com/wiki/abc:standard:v2.1#lunit_note_length
+     *
+     * @param string   $meterLine     line of meter (M) information field
+     *
+     * @return string  string with default length
+     */
+    function _getDefaultLength($meterLine) {
+        $meter = preg_replace('/\s?M\s?:/', '', $meterLine);
+
+        // default to 1/8 if meter is empty or "none"
+        if (!$meter || $meter == 'none') return "1/8";
+
+        // replace meter symbols with standard meters
+        $meter = str_replace('C|', '2/4', $meterLine);
+        $meter = str_replace('C', '4/4', $meterLine);
+
+        // meter is usually in the form <number>/<number>
+        preg_match("/(\d)\/(\d)/", $meter, $matches);
+        // default to 1/8 if meter isn't in that form
+        if (count($matches) != 3) return "1/8";
+
+        // default unit length calculation
+        $ratio = (int) $matches[1] / (int) $matches [2];
+        if ($ratio < 0.75) {
+            $length = "1/16";
+        } else {
+            $length = "1/8";
+        }
+
+        return $length;
+    }
+
+    /**
      * Build classes for abc container depending on chosen abc library
      *
      * @return string   CSS classes
@@ -227,6 +262,39 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
     }
 
     /**
+     * Fix ABC library bugs:
+     *
+     * * abc2svg doesn't render anything if there is a space after the X:
+     * * $ABC_UI messes with note lengths if L isn't set
+     *
+     * @param string   $src     ABC code source
+     *
+     * @return string  adjusted ABC code
+     */
+    function _fixLibraryBugs($src) {
+        // remove spaces after 'X:'
+        // fixes a bug in abc2svg which won't render anything with a space after X:
+        // fixed upstream, see https://chiselapp.com/user/moinejf/repository/abc2svg/tktview?name=25d793e76f
+        $xLine = $this->_getAbcLine($src, 'X');
+        $xLineNoSpaces = str_replace(' ', '', $xLine);
+        $src = $this->_replace_first($src, $xLine, $xLineNoSpaces);
+
+        // add L: line if there isn't one
+        // fixes bug in $ABC_UI which has a wrong default unit length
+        $lLine = $this->_getAbcLine($src, 'L');
+        if (!$lLine) {
+            $mLine = $this->_getAbcLine($src, 'M');
+
+            if ($mLine) {
+                $lValue = $this->_getDefaultLength($mLine);
+                $mLineAndLline = $mLine.NL.'L:'.$lValue;
+                $src = $this->_replace_first($src, $mLine, $mLineAndLline);
+            }
+        }
+        return $src;
+    }
+
+    /**
      * Render block of ABC
      *
      * @param Doku_Renderer $renderer The renderer
@@ -240,6 +308,7 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
         $renderer->doc .= '<div class="'.$classes.'">';
         $renderer->doc .= hsc($src);
         // needs NL before </div> or else abc2svg interprets the </div> as abc
+        // see https://chiselapp.com/user/moinejf/repository/abc2svg/tktview?name=c1e33f49dd
         $renderer->doc .= NL.'</div>'.NL;
     }
 
