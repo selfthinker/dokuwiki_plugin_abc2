@@ -120,14 +120,12 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
                         $transSrc = $src;
 
                         // add shift parameter into key information field
-                        $keyLineNoNL = str_replace("\n", '', $keyLine);
-                        $keyLineNew = $keyLineNoNL.' shift='.$transShiftStr;
-                        $transSrc = $this->_replace_first($transSrc, $keyLineNoNL, $keyLineNew);
+                        $keyLineNew = $keyLine.' shift='.$transShiftStr;
+                        $transSrc = $this->_replace_first($transSrc, $keyLine, $keyLineNew);
 
                         // add transposition semitone after title
-                        $titleLineNoNL = str_replace("\n", '', $titleLine);
-                        $titleLineNew = $titleLineNoNL.' ['.$trans.']';
-                        $transSrc = $this->_replace_first($transSrc, $titleLineNoNL, $titleLineNew);
+                        $titleLineNew = $titleLine.' ['.$trans.']';
+                        $transSrc = $this->_replace_first($transSrc, $titleLine, $titleLineNew);
 
                         // render another ABC block per transposition
                         $this->_renderAbcBlock($renderer, $transSrc, $containerClasses.' hide-source');
@@ -254,8 +252,11 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
      * @return string  information field, whole line
      */
     function _getAbcLine($src, $field) {
-        preg_match("/\s?".$field."\s?:(.*?)\n/s", $src, $result);
-        return $result[0];
+        if (preg_match("/^\s?".$field."\s?:(.*?)$/m", $src, $result)) {
+            return $result[0];
+        } else {
+            return false;
+        }
     }
 
     /**
