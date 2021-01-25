@@ -4,7 +4,7 @@
 .no-js .abc2-plugin,
 .preview .abc2-plugin.lib-abc2svg, /* abc2svg cannot be used in preview */
 .abc2-plugin.lib-abcjs .abctext,
-.abc2-plugin.lib-abc-ui {
+.abc2-plugin.lib-abc-ui.abc-source {
   white-space: pre;
   overflow: auto;
   font-family: monospace;
@@ -16,7 +16,7 @@
 /* hide the source if 'showSource' config is switched off */
 .hide-source.abc2-plugin.lib-abcjs .abctext,
 .hide-source.abc2-plugin.lib-abc-ui.abc-source {
-  display:none;
+  display: none;
 }
 
 /* always show the code when JS is switched off */

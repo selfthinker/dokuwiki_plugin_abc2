@@ -98,10 +98,8 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
             }
 
             // render the main ABC block
-            $containerClasses = $this->_getClasses();
-            $showHideClass = $this->getConf('showSource') ? ' show-source' : ' hide-source';
             $src = $this->_fixLibraryBugs($src);
-            $this->_renderAbcBlock($renderer, $src, $containerClasses.$showHideClass);
+            $this->_renderAbcBlock($renderer, $src, true);
 
             // transposition
             // via adding `shift=xy` to key information field
@@ -129,7 +127,7 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
                         $transSrc = $this->_replace_first($transSrc, $titleLine, $titleLineNew);
 
                         // render another ABC block per transposition
-                        $this->_renderAbcBlock($renderer, $transSrc, $containerClasses.' hide-source');
+                        $this->_renderAbcBlock($renderer, $transSrc, false);
                     }
                 }
             }
@@ -236,29 +234,40 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
     /**
      * Build classes for abc container depending on chosen abc library
      *
-     * @return string   CSS classes
+     * @param bool      $orig     original source (not a transposition)
+     *
+     * @return array    CSS classes
      */
-    function _getClasses() {
+    function _getClasses($orig) {
       switch($this->getConf('library')) {
           case 'abcjs':
               // makes the midi player bigger
-              $containerClasses = 'abcjs-large';
+              $libClasses = 'abcjs-large';
               break;
 
           case 'abc2svg':
-              // no extra class needed
+              $libClasses = 'abc';
               break;
 
           case 'abc-ui':
               // 'abc-source' is mandatory and needs to be first
-              $containerClasses = 'abc-source '.$this->getConf('abcuiConfig');
+              $libClasses = 'abc-source '.$this->getConf('abcuiConfig');
           break;
       }
 
-      // add generic class plus class identifying the chosen library
-      $containerClasses .= ' abc2-plugin lib-'.$this->getConf('library');
+      // generic class plus class identifying the chosen library
+      $containerClasses = ' abc2-plugin lib-'.$this->getConf('library');
 
-      return $containerClasses;
+      if ($orig && $this->getConf('showSource')) {
+          $containerClasses .= ' show-source';
+      } else {
+          $containerClasses .= ' hide-source';
+      }
+
+      return array(
+          'lib-classes' => $libClasses,
+          'container-classes' => $containerClasses,
+      );
     }
 
     /**
@@ -299,17 +308,30 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
      *
      * @param Doku_Renderer $renderer The renderer
      * @param string        $src      ABC code source
-     * @param string        $classes  CSS classes
+     * @param bool          $orig     original source (not a transposition)
      *
      * @return void
      */
-    function _renderAbcBlock($renderer, $src, $classes) {
-        // needs to be a div, otherwise abc-ui won't work
-        $renderer->doc .= '<div class="'.$classes.'">';
+    function _renderAbcBlock($renderer, $src, $orig) {
+        $classes = $this->_getClasses($orig);
+
+        // needs an extra parent div because abc2svg will otherwise break any broken rhythm
+        // see https://chiselapp.com/user/moinejf/repository/abc2svg/tktview/f632b51e4da81e3bd8292a30d078a5810488b878
+        // cannot be used for all libs because otherwise abc-ui will break
+        if ($this->getConf('library') == 'abc2svg') {
+            $renderer->doc .= '<div class="'.$classes['container-classes'].'">'.NL;
+            $renderer->doc .= '<div class="'.$classes['lib-classes'].'">';
+        } else {
+            // needs to be a div, otherwise abc-ui won't work
+            $renderer->doc .= '<div class="'.$classes['lib-classes'].$classes['container-classes'].'">';
+        }
+
         $renderer->doc .= hsc($src);
-        // needs NL before </div> or else abc2svg interprets the </div> as abc
-        // see https://chiselapp.com/user/moinejf/repository/abc2svg/tktview?name=c1e33f49dd
-        $renderer->doc .= NL.'</div>'.NL;
+
+        if ($this->getConf('library') == 'abc2svg') {
+            $renderer->doc .= '</div>';
+        }
+        $renderer->doc .= '</div>'.NL;
     }
 
     /**
