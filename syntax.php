@@ -326,6 +326,9 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
             $renderer->doc .= '<div class="'.$classes['lib-classes'].$classes['container-classes'].'">';
         }
 
+        if ($this->getConf('library') == 'abc-ui') {
+            $renderer->doc .= '%%player_top'.NL;
+        }
         $renderer->doc .= hsc($src);
 
         if ($this->getConf('library') == 'abc2svg') {
