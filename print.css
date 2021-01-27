@@ -7,7 +7,6 @@ svg {
 /* don't print abc midi players etc */
 .abcjs-inline-midi,
 .abc-source .nop,
-.abc-render > table td:first-child,
 .abc-player,
 .abc-player.ready,
 .abc-voices,
