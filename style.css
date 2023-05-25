@@ -4,6 +4,7 @@
 .abc-render svg {
   color: @ini_text;
   background-color: @ini_background;
+	height: auto;
 }
 
 /* the SVGs abc2svg (and abc-ui) produce are not responsive and get cut off */
