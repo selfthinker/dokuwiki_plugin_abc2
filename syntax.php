@@ -87,7 +87,7 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
             return false;
         }
 
-        if(strlen($data[0]) > 1){
+        if(strlen($data[0] ?? null) > 1){
             $src = $data[0];
             $transStr = $data[1];
 
