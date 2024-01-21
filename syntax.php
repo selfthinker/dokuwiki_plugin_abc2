@@ -150,7 +150,7 @@ class syntax_plugin_abc2 extends DokuWiki_Syntax_Plugin
         // do not transpose by the same amount of semitones more than once
         $arr = array_unique($arr);
         // do not transpose higher or lower than 12 semitones
-        $arr = array_filter($arr, create_function('$t', 'return($t<12 && $t >-12);'));
+        $arr = array_filter($arr, function($t){ return($t<12 && $t >-12); });
         // do not allow transposition into more than 8 keys
         array_splice($arr, 8);
         return $arr;
